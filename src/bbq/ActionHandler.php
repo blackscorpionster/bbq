@@ -17,27 +17,36 @@ class ActionHandler {
 
 	private string $app = App::APP_NAME;
 	private string $method = "POST";
-	private array $routes;
+	private array $routes = [];
 	private string $url = "";
-	private string $query = "";
+	private array $query = [];
 	private array $headers = [];
 	private string $contentType = "";
+	private array $request = [];
+	private array $jsonData = []; 
+	private ?Route $route = null;
 
-	public function __construct() {
-		$routes = new Routes();
+	public function __construct(Routes $routes) {
 		$this->routes = $routes->getRoutes();
 		$this->processUrl();
 		$this->processHeaders();
 		$this->processContentType();
+		$this->matchUrl();
 	}
 
-	public function getRoutes(): array 
+	/**
+	 * @return Route|null
+	 */
+	public function getRoute(): ?Route 
 	{
-		return $this->routes;
+		return $this->route;
 	}
 
 	private function processUrl(): void
 	{
+		if (empty($_SERVER['REQUEST_URI'])) {
+			throw new \Exception("Wrong url");
+		}
 		$urlDecoded = \urldecode($_SERVER['REQUEST_URI']);
 		$parsedUrl = parse_url($urlDecoded);
 		if (empty($parsedUrl["path"])) {
@@ -45,60 +54,111 @@ class ActionHandler {
 		}
 		$this->url = $parsedUrl["path"];
 		if (!empty($parsedUrl["query"])) {
-			$this->query = $parsedUrl["query"];
+			 parse_str($parsedUrl["query"], $this->query);
 		}
 	}
 
 	private function processHeaders(): void
 	{
+		if (empty($_SERVER["REQUEST_METHOD"])) {
+			throw new \Exception("Wrong request method");
+		}
 		$method = $_SERVER["REQUEST_METHOD"];
-		if (empty($method) || !\in_array($method, self::VALID_HTTP_METHODS)) {
+		if (!\in_array($method, self::VALID_HTTP_METHODS)) {
 			throw new \Exception("Wrong request method");
 		}
 		$this->method = $method;
-		$contentType = $_SERVER["CONTENT_TYPE"];
+		
 		$headers = \getallheaders();
 		$this->headers = $headers;
-		if ($contentType !== $headers["Content-Type"]) {
-			throw new \Exception("Wrong content type");
-		}
-		$this->contentType = $contentType;
 	}
 
+	/**
+	 * Each request has one content type only
+	 */
 	private function processContentType(): void
-	{
-		// Files
-		if (false !== strpos($this->contentType, 'multipart/form-data')) {
+	{		
+		if (!empty($_SERVER["CONTENT_TYPE"])) {
+			$contentType = $_SERVER["CONTENT_TYPE"];
+			$this->contentType = $contentType;
+			
 			$this->processFormBody();
-		}
 
-		// Json data
-		if (false !== strpos($this->contentType, 'application/json')) {
-			$this->processJsonBody();
+			if ('application/json' === $this->contentType) {
+				$this->processJsonBody();
+			}
 		}
-		print($this->contentType);
 	}
 
 	private function processFormBody(): void
 	{
-		// json reuqest
 		if ("POST" === $this->method) {
 			$formData = $_POST;
-		} else {
-			$formData = $_REQUEST;
 		}
+
+		$formData = $_REQUEST;
+
+		$formData = array_merge($formData, $_REQUEST);
 		
-		print_r($formData);
+		$this->request = $formData;
 	}
 
 	private function processJsonBody(): void
 	{
-		// json reuqest
 		$jsonData = file_get_contents('php://input');
+
 		$decodedRequest = \json_decode($jsonData, true);
 		if (JSON_ERROR_NONE !== \json_last_error()) {
 			throw new \Exception("Malformed json request");
 		}
-		print_r($decodedRequest);
+
+		if (!empty($decodedRequest) && \is_array($decodedRequest)) {
+			$this->jsonData = $decodedRequest;
+		}
+	}
+	
+	private function matchUrl(): void
+	{
+		$urlParts = explode('/', $this->url);
+		$urlPartsQty = \count($urlParts);
+		print"<pre>";
+		// print_r($this->routes);
+		// print_r($urlParts);
+
+		foreach ($this->routes as $idx => $route) {
+			$parts = $route->getRouteParts();
+
+			// Http method from the req must match that on the routes
+			if (strtolower($route->getRequestMethod()) !== strtolower($this->method)) {
+				continue;
+			}
+
+			if (\count($parts) !== $urlPartsQty) {
+				continue;
+			}
+
+			$match = $this->matchUrlParts($parts, $urlParts);
+			if (empty($match)) {
+				continue;
+			}
+
+			$route->setRouteParts($match);
+			$this->route = $route;
+		}
+	}
+
+	private function matchUrlParts(array $routeParts, array $urlParts): array {
+		$routePieces = [];
+		foreach($urlParts as $idx => $piece) {
+			$routePart = $routeParts[$idx];
+			if (\strpos($routePart, ":") === false) {
+				if ($routePart !== $piece) {
+					return [];
+				}
+			}
+			$routePieces[$routePart] = $piece;
+		}
+		
+		return $routePieces;
 	}
 }

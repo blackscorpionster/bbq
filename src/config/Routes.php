@@ -10,10 +10,30 @@ class Routes {
 
     public function __construct() {
         $this->routes = [
-            new Route('run_action', '/action/{id}', 'POST'),
+            new Route('welcome', 
+                '/welcome', 
+                'GET', 
+                'src\controller\WelcomeController', 
+                'welcome'
+            ),
+            new Route('welcome user', 
+                '/welcome/:userName', 
+                'GET', 
+                'src\controller\WelcomeController', 
+                'welcomeUser'
+            ),
+            new Route('Register company user', 
+                '/register/user/company/:companyId/user/:userId', 
+                'GET', 
+                'src\controller\RegisterController', 
+                'registerUser'
+            ),
         ];
     }
 
+    /**
+     * @return Route[]
+     */
     public function getRoutes(): array
     {
         return $this->routes;
