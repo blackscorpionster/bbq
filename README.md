@@ -1,2 +1,6 @@
 # bbq
-Action driven framework. Unlike traditional frameworks, there are no explicit urls and the permission handling is done by creating relationships between actions and roles and then, the roles are assigned to each user, this way the permission checks are done by the framework not by the dev.
+Name in honour of the simple but efective BBQ, bbq is a MVC PHP web framework that focuses on doing things right and simple. Some of the features suported are:
+Autoload and Namespaces, Friendly URLs, Entinty Manager (no ORM) and DB manager.
+Comencement: Feb 2020
+Place: Moorooka, Brisbane, Australia
+Laguage use: PHP 7.4
