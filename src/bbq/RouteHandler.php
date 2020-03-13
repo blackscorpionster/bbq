@@ -3,34 +3,68 @@ declare(strict_types=1);
 
 namespace src\bbq;
 use src\bbq\Route;
+use src\bbq\ActionHandler;
 
 class RouteHandler {
     private Route $route;
+    private ActionHandler $actionHandler;
 
-    public function __construct(Route $route) {
-        $this->route = $route;
+    public function __construct(ActionHandler $actionHandler) {
+        $this->actionHandler = $actionHandler;
+        $this->route = $this->actionHandler->getRoute();
     }
 
     public function call(): void
     {
-        $class = $this->route->getClass();
-        $classInstance = new $class();
+        try {
+            $return = $this->invokeV1();
+        } catch (\Throwable $exception) {
+            $return = $this->invokeV2();
+        }
+        
+    }
+
+    private function invokeV1() {
         $params = array_values(array_filter(
             $this->route->getRouteParts(), 
             fn($key) => 0 === strpos($key, ":"), 
             ARRAY_FILTER_USE_KEY
         ));
 
-        // print"<pre> CALLING: >>> ";
-        // print_r($this->route->getRouteParts());
-        // print_r($params);
-        // die(" <<< PARAMS");
-        $return = call_user_func_array(
+        $class = $this->route->getClass();
+        $classInstance = new $class();
+
+        return call_user_func_array(
             [$classInstance, $this->route->getMethod()],
             $params
         );
+    }
 
-		print"<pre>";
-        print_r($this->route->getRouteParts());
+    private function invokeV2() {
+        $params = $this->route->getRouteParts();
+
+        $class = $this->route->getClass();
+        $classInstance = new $class();
+
+        $reflection = new \ReflectionMethod($classInstance, $this->route->getMethod());
+
+        $pass = array();
+
+        foreach($reflection->getParameters() as $param)
+        {
+            if (ActionHandler::CLASS_NAME_AS_PARAMETER === $param->getName()) {
+                $pass[] = $this->actionHandler;
+                continue;
+            }
+
+            $currentParam = ":" . $param->getName();
+
+            /**
+             *  @var $param ReflectionParameter
+             */
+            $pass[] = $params[$currentParam] ?? $param->getDefaultValue();
+        }
+        
+        return $reflection->invokeArgs($classInstance, $pass);
     }
 }

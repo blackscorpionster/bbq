@@ -9,11 +9,11 @@ use src\bbq\Route;
 use src\bbq\RouteHandler;
 use src\config\Routes;
 
-$actionManager = new ActionHandler(new Routes());
+$actionHandler = new ActionHandler(new Routes());
 
-if (!$actionManager->getRoute() instanceof Route) {
+if (!$actionHandler->getRoute() instanceof Route) {
     throw new \Exception("Url not found");
 }
 
-$routeHandler = new RouteHandler($actionManager->getRoute());
+$routeHandler = new RouteHandler($actionHandler);
 $routeHandler->call();

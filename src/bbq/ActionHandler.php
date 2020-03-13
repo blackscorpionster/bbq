@@ -15,6 +15,8 @@ class ActionHandler {
 		"DELETE",
 	];
 
+	public const CLASS_NAME_AS_PARAMETER = "actionHandler";
+
 	private string $app = App::APP_NAME;
 	private string $method = "POST";
 	private array $routes = [];
@@ -121,9 +123,6 @@ class ActionHandler {
 	{
 		$urlParts = explode('/', $this->url);
 		$urlPartsQty = \count($urlParts);
-		print"<pre>";
-		// print_r($this->routes);
-		// print_r($urlParts);
 
 		foreach ($this->routes as $idx => $route) {
 			$parts = $route->getRouteParts();
@@ -160,5 +159,29 @@ class ActionHandler {
 		}
 		
 		return $routePieces;
+	}
+
+	/**
+	 * Get the value of request
+	 */ 
+	public function getRequest(): array
+	{
+		return $this->request;
+	}
+
+	/**
+	 * Get the value of jsonData
+	 */ 
+	public function getJsonData(): array
+	{
+		return $this->jsonData;
+	}
+
+	/**
+	 * Get the value of query
+	 */ 
+	public function getQuery(): array
+	{
+		return $this->query;
 	}
 }
