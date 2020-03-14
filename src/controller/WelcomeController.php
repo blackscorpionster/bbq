@@ -9,7 +9,7 @@ class WelcomeController {
         print_r("Hi");
     }
 
-    public function welcomeUser(string $userName, ActionHandler $actionHandler): void {
+    public function welcomeUser(ActionHandler $actionHandler, string $userName): void {
         print_r($actionHandler->getQuery());
         print($userName);die("Iside controller baby");
     }

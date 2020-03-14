@@ -33,11 +33,12 @@ class RouteHandler {
 
         $class = $this->route->getClass();
         $classInstance = new $class();
-
-        return call_user_func_array(
+        // print_r($this->route->getRouteParts());
+        // print_r($params);die("<<");
+        echo(call_user_func_array(
             [$classInstance, $this->route->getMethod()],
             $params
-        );
+        ));exit();
     }
 
     private function invokeV2() {
@@ -65,6 +66,6 @@ class RouteHandler {
             $pass[] = $params[$currentParam] ?? $param->getDefaultValue();
         }
         
-        return $reflection->invokeArgs($classInstance, $pass);
+        echo($reflection->invokeArgs($classInstance, $pass));exit();
     }
 }

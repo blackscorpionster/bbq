@@ -132,11 +132,17 @@ class ActionHandler {
 				continue;
 			}
 
+			// print"<pre>";
+			// print_r($parts);
+			// print_r($urlParts);
 			if (\count($parts) !== $urlPartsQty) {
 				continue;
 			}
 
 			$match = $this->matchUrlParts($parts, $urlParts);
+
+			// print_r($match);exit();
+
 			if (empty($match)) {
 				continue;
 			}

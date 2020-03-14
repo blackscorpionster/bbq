@@ -25,8 +25,15 @@ class Routes {
             new Route('Register company user', 
                 '/register/user/company/:companyId/user/:userId', 
                 'GET', 
-                'src\controller\RegisterController', 
+                'src\controller\RegisterController',
                 'registerUser'
+            ),
+            new Route(
+                'Client user query',
+                '/register/user/client/:clientId/user/:userName',
+                'POST',
+                'src\controller\RegisterController', 
+                'clientUser'
             ),
         ];
     }
