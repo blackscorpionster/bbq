@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace src\bbq;
 use src\config\App;
 use src\config\Routes;
+use src\bbq\UploadedFile;
+use src\bbq\Route;
 
 class ActionHandler {
 	public const VALID_HTTP_METHODS = [
@@ -25,7 +27,8 @@ class ActionHandler {
 	private array $headers = [];
 	private string $contentType = "";
 	private array $request = [];
-	private array $jsonData = []; 
+	private array $jsonData = [];
+	private array $files = []; 
 	private ?Route $route = null;
 
 	public function __construct(Routes $routes) {
@@ -33,6 +36,7 @@ class ActionHandler {
 		$this->processUrl();
 		$this->processHeaders();
 		$this->processContentType();
+		$this->processFiles();
 		$this->matchUrl();
 	}
 
@@ -118,6 +122,12 @@ class ActionHandler {
 			$this->jsonData = $decodedRequest;
 		}
 	}
+
+	private function processFiles(): void {
+		foreach($_FILES as $fileData) {
+			$this->files[] = new UploadedFile($fileData);
+		}
+	}
 	
 	private function matchUrl(): void
 	{
@@ -189,5 +199,13 @@ class ActionHandler {
 	public function getQuery(): array
 	{
 		return $this->query;
+	}
+
+	/**
+	 * Get the value of files
+	 */ 
+	public function getFiles(): array
+	{
+		return $this->files;
 	}
 }

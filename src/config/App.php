@@ -5,7 +5,4 @@ namespace src\config;
 
 class App {
     public const APP_NAME = 'bbq';
-    
-    public function __construct() {
-    }
 }

@@ -18,7 +18,7 @@ class Routes {
             ),
             new Route('welcome user', 
                 '/welcome/:userName', 
-                'GET', 
+                'POST', 
                 'src\controller\WelcomeController', 
                 'welcomeUser'
             ),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace src\bbq;
 use src\bbq\Route;
 use src\bbq\ActionHandler;
+use src\bbq\DependencyHandler;
 
 class RouteHandler {
     private Route $route;
@@ -45,7 +46,10 @@ class RouteHandler {
         $params = $this->route->getRouteParts();
 
         $class = $this->route->getClass();
-        $classInstance = new $class();
+die(">>>");
+        $classHandler = new DependencyHandler($class);
+
+        $classInstance = $classHandler->getClassInstance();
 
         $reflection = new \ReflectionMethod($classInstance, $this->route->getMethod());
 

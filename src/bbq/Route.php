@@ -17,11 +17,21 @@ class Route {
             throw new \Exception('Unknown class ' . $class);
         }
 
-        $classInstance = new $class();
-        $methodExists = \method_exists($classInstance, $method);
-        if (false === $methodExists) {
+        try {
+            $classProps = new \ReflectionClass($class);
+        } catch (\Throwable $exception) {
+            throw new \Exception("Could not read class. Error: " . $exception->getMessage());
+        }
+
+        // Replace this with a foreach + break;
+        $classMethod = current(array_filter($classProps->getMethods(), function(\ReflectionMethod $classMethod) use ($method) {
+            return $method === $classMethod->getName();
+        }));
+
+        if (!$classMethod->getName() === $method) {
             throw new \Exception('Unknown action ' . $method);
         }
+        
         $this->name = $name;
         $this->url = $url;
         $this->requestMethod = $requestMethod;
