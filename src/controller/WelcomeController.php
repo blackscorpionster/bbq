@@ -15,8 +15,9 @@ class WelcomeController {
         print_r("Hi");
     }
 
-    public function welcomeUser(ActionHandler $actionHandler, string $userName): void {
-        print_r($actionHandler->getFiles());
-        print($userName);die("Iside controller baby");
+    public function welcomeUser(string $userName): void {
+        print"<pre>";
+        print_r($this->actionHandler->getFiles());
+        print($userName);die("Inside controller baby");
     }
 }

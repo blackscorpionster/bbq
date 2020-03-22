@@ -11,18 +11,22 @@ class DependencyHandler {
         $this->instantiateClass();
     }
 
+    // https://www.php.net/manual/en/book.reflection.php
+    /**
+     * Handles dependency of object type only
+     */
     private function instantiateClass(): void {
         try {
-            $classProps = new \ReflectionClass($this->classPath);
+            $refelectionClass = new \ReflectionClass($this->classPath);
         } catch (\Throwable $exception) {
             throw new \Exception("Could not read class. Error: " . $exception->getMessage());
         }
-     
-        $constructor = $classProps->getConstructor();
 
-        print_r($constructor);die();
+        // https://www.php.net/manual/en/reflectionclass.getconstructor.php
+        $constructor = $refelectionClass->getConstructor();
 
-        if (!$constructor instanceof \ReflectionMethod) {
+        // Class has no constructor, or empty it can be initialized immediately
+        if (!$constructor instanceof \ReflectionMethod || empty($constructor->getParameters())) {
             try {
                 $class = new $this->classPath();
                 $this->classInstance = $class;
@@ -32,12 +36,31 @@ class DependencyHandler {
             }
         }
 
+        /**
+         * @var \ReflectionParameter[] $parameters
+         */
         $parameters = $constructor->getParameters();
 
+        $constructorParams = [];
+        foreach($parameters as $idx => $parameter) {
+            if (is_object($parameter->getClass())) {
+                $constructorParams[] = ['class' => $parameter->getClass()->getName()];
+            } else {
+                throw new \Exception("only object injection supported");
+                // https://www.php.net/manual/en/reflectionparameter.gettype.php
+                //$constructorParams[] = [$parameter->getType()->getName() => $parameter->getName()];
+            }
+        }
+        $classParams = [];
 
-        print_r($parameters);die();
+        foreach($constructorParams as $idx => $paramDetails) {
+            $classParam = $paramDetails["class"];
+            $handledClass =  new DependencyHandler($classParam);
+            $classParams[] = $handledClass->getClassInstance();
+        }
 
-        
+        $this->classInstance = $refelectionClass->newInstanceArgs($classParams);
+        return;        
     }
 
     /**

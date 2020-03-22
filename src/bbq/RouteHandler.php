@@ -34,8 +34,8 @@ class RouteHandler {
 
         $class = $this->route->getClass();
         $classInstance = new $class();
-        // print_r($this->route->getRouteParts());
-        // print_r($params);die("<<");
+
+        // Invokes controller method and returns to cl
         echo(call_user_func_array(
             [$classInstance, $this->route->getMethod()],
             $params
@@ -46,7 +46,7 @@ class RouteHandler {
         $params = $this->route->getRouteParts();
 
         $class = $this->route->getClass();
-die(">>>");
+
         $classHandler = new DependencyHandler($class);
 
         $classInstance = $classHandler->getClassInstance();
@@ -69,7 +69,9 @@ die(">>>");
              */
             $pass[] = $params[$currentParam] ?? $param->getDefaultValue();
         }
-        
-        echo($reflection->invokeArgs($classInstance, $pass));exit();
+
+        // Invokes controller method and returns to cl
+        echo($reflection->invokeArgs($classInstance, $pass));
+        exit();
     }
 }
