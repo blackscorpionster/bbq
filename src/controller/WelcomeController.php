@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace src\controller;
 use src\bbq\ActionHandler;
+use src\bbq\DbHandler;
 
 class WelcomeController {
     private ActionHandler $actionHandler;
 
-    public function __construct(ActionHandler $actionHandler) {
+    private DbHandler $dbHandler;
+
+    public function __construct(ActionHandler $actionHandler, DbHandler $dbHandler) {
         $this->actionHandler = $actionHandler;
+        $this->dbHandler = $dbHandler;
     }
 
     public function welcome(): void {
@@ -18,6 +22,6 @@ class WelcomeController {
     public function welcomeUser(string $userName): void {
         print"<pre>";
         print_r($this->actionHandler->getFiles());
-        print($userName);die("Inside controller baby");
+        print_r($this->dbHandler->runNativeSql("SELECT * FROM app_user WHERE cod_user = 4;"));
     }
 }
