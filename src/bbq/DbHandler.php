@@ -30,53 +30,60 @@ class DbHandler
 	}
 
 	/**
-    * native sql
+    * Safely runs sql statements
+    *
+    * how to run native queries: e.g.
+    * 
+    * Using pure SQL:
+    * $this->runNativeSql("SELECT * FROM app_user WHERE cod_user =4")
+    *
+    * Using unpacked arrays:
+    * $this->runNativeSql("SELECT * FROM app_user WHERE cod_user in (:?, :?) and cod_state = :?", ...[3, 4, 1]);
+    *
+    * Using variable arguments:
+    * $this->runNativeSql("SELECT * FROM app_user WHERE cod_user in (:?, :?) and cod_state = :?", 3, 4, 1);
+    *
+    * Using variable arguments of diferent datatype: (works as an unpacked array too)
+    * runNativeSql("SELECT * FROM app_user WHERE cod_user in (:?, :?) and cod_state = :? and cod_country = :?", 3, 4, 1, 'CO');
     *
 	* @param string $statement
 	* @return array
 	*/
-	public function runNativeSql(string $statement): array
+	public function runNativeSql(string $statement, ...$params): array
 	{
 		$res = [];
         $db = $this->db;
-        
-		if (in_array($this->driver ,['oci8', 'oci8po'])) {
-			$stmt = $db->PrepareSP($statement);
-		} else {
-			$stmt = $db->Prepare($statement);
-        }
 
-		$rs = $db->Execute($stmt);
+        $sql = $db->addQ(empty($params) ? $statement : $this->prepareSql($statement));
+
+        $stmt = $db->Prepare($sql);
+    
+		$rs = $db->Execute($stmt, $params);
 		if (!$rs) {
+            echo("failed");
             $db->Close();
-			throw new \Exception('Problems trying to execute function :: ' . $db->ErrorMsg());
+			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg());
 		} else {
+            echo("succeeded");
 			$res = $rs->GetRows();
 			$db->Close();
 			return $res;
 		}
 	}
-	
+    
     /**
-     * This functions builds a SQL Stored sentence, depending on the db driver selected
-     * @param string $fName
-     * @param string $params
-     * @return string $params
+     * Replaces all special character placeholders (:?) with param placeholders compatible with the driver in use
+     * @param string
+     * @return string
      */
-	function buildStoredProcedure(string $fName, string $params): string
-	{
-		if($this->db == "oci8" || $this->db == "oci8po")
-		{
-			$sql = "BEGIN ".$fName."(".$params."); END;";
-		}
-		else
-		{
-			
-			if($this->db == "mysql")
-				$sql = "call ".$fName."(".$params.")";
-			else
-				$sql = "SELECT ".$fName."(".$params.")";
-		}
-	}
+    private function prepareSql(string $preSql): string {
+        $queryParts = explode('?', $preSql);
+        $mappedQuery = array_map(fn(int $idx, string $sqlPart) =>
+                str_replace(':', $this->db->param("param" . (string)$idx), $sqlPart) ,
+                array_keys($queryParts), $queryParts
+        );
+
+        return implode(' ', $mappedQuery);
+    }
 	
 }

@@ -22,6 +22,6 @@ class WelcomeController {
     public function welcomeUser(string $userName): void {
         print"<pre>";
         print_r($this->actionHandler->getFiles());
-        print_r($this->dbHandler->runNativeSql("SELECT * FROM app_user WHERE cod_user = 4;"));
+        print_r($this->dbHandler->runNativeSql( "SELECT * FROM app_user WHERE cod_country in (:?, :?);" , "CO'", 'CC'));
     }
 }
