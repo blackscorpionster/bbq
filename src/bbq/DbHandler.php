@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace src\bbq;
 
 use src\config\App;
+
 //If using Adodb, use this constant to define the case used in the results keys
 if(!defined('ADODB_ASSOC_CASE')){
 	define('ADODB_ASSOC_CASE',1); // 1 UpperCase, 0 LowerCase, 2 As written on the SQL sentence
@@ -13,12 +14,12 @@ require_once('vendor/adodb/adodb-php/adodb.inc.php');
 
 class DbHandler
 {
-	protected $host = App::APP_DB_HOST;
-	protected $user = App::APP_DB_USER;
-	protected $password = App::APP_DB_PASSWORD;
-	protected $databaseName = App::APP_DB_NAME;
-	protected $driver = App::APP_DB_DRIVER;
-	public $db;
+	protected string $host = App::APP_DB_HOST;
+	protected string  $user = App::APP_DB_USER;
+	protected string  $password = App::APP_DB_PASSWORD;
+	protected string  $databaseName = App::APP_DB_NAME;
+	protected string  $driver = App::APP_DB_DRIVER;
+	public Object $db;
 	
 	public function __construct() 
 	{

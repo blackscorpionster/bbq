@@ -35,6 +35,21 @@ class Routes {
                 'src\controller\RegisterController', 
                 'clientUser'
             ),
+            new Route (
+                'REST Api login',
+                '/api/login',
+                'POST',
+                'src\controller\API\AuthController',
+                'login',
+                Route::REST_API
+            ),
+            new Route (
+                'WEB Api login',
+                '/login',
+                'POST',
+                'src\controller\AuthController',
+                'login'
+            )
         ];
     }
 

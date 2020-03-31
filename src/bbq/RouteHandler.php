@@ -43,11 +43,13 @@ class RouteHandler {
     }
 
     private function invokeV2() {
+        //$time_start = $this->microtime_float();
         $params = $this->route->getRouteParts();
 
         $class = $this->route->getClass();
 
-        $classHandler = new DependencyHandler($class);
+        // Resolves the class' constructor parameters and instantiates the class
+        $classHandler = new DependencyHandler($class, $this->actionHandler);
 
         $classInstance = $classHandler->getClassInstance();
 
@@ -55,6 +57,7 @@ class RouteHandler {
 
         $pass = array();
 
+        // resolves the method to be invoked 
         foreach($reflection->getParameters() as $param)
         {
             if (ActionHandler::CLASS_NAME_AS_PARAMETER === $param->getName()) {
@@ -72,6 +75,15 @@ class RouteHandler {
 
         // Invokes controller method and returns to cl
         echo($reflection->invokeArgs($classInstance, $pass));
+        //$time_end = $this->microtime_float();
+        //$time = $time_end - $time_start;
+        //exit("Took {$time}");
         exit();
+    }
+
+    private function microtime_float()
+    {
+        list($usec, $sec) = explode(" ", microtime());
+        return ((float)$usec + (float)$sec);
     }
 }

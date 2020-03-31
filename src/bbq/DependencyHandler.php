@@ -3,11 +3,16 @@ declare(strict_types = 1);
 
 namespace src\bbq;
 
+use src\bbq\ActionHandler;
+
 class DependencyHandler {
     private string $classPath;
     private Object $classInstance;
-    public function __construct(string $classPath) {
+    private ?ActionHandler $actionHandler;
+
+    public function __construct(string $classPath, ?ActionHandler $actionHandler = null) {
         $this->classPath = $classPath;
+        $this->actionHandler = $actionHandler;
         $this->instantiateClass();
     }
 
@@ -52,11 +57,19 @@ class DependencyHandler {
             }
         }
         $classParams = [];
-
+        print"<pre>";
         foreach($constructorParams as $idx => $paramDetails) {
             $classParam = $paramDetails["class"];
-            $handledClass =  new DependencyHandler($classParam);
-            $classParams[] = $handledClass->getClassInstance();
+
+            print_r($classParam);print"<br>";
+            if ($this->actionHandler instanceof ActionHandler && $classParam === ActionHandler::CLASS_PATH_AS_PARAMETER) {
+                print"Use action handler<br>";
+                $classParams[] = $this->actionHandler;
+            } else {
+                print"Resolved calss {$classParam}<br>";
+                $handledClass =  new DependencyHandler($classParam, $this->actionHandler);
+                $classParams[] = $handledClass->getClassInstance();
+            }
         }
 
         $this->classInstance = $refelectionClass->newInstanceArgs($classParams);

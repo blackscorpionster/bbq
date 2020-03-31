@@ -4,14 +4,18 @@ declare(strict_types=1);
 namespace src\bbq;
 
 class Route {
+    public const WEB_API = 'WEB';
+    public const REST_API = 'REST';
+
     private string $name;
     private string $url;
     private string $requestMethod;
     private string $class;
     private string $method;
+    private string $apiType;
     private array $routeParts;
 
-    public function __construct(string $name, string $url, string $requestMethod, string $class, string $method) {
+    public function __construct(string $name, string $url, string $requestMethod, string $class, string $method, string $apiType = self::WEB_API) {
         $classExists = \class_exists($class);
         if (false === $classExists) {
             throw new \Exception('Unknown class ' . $class);
@@ -23,6 +27,7 @@ class Route {
             throw new \Exception("Could not read class. Error: " . $exception->getMessage());
         }
 
+        // TODO
         // Replace this with a foreach + break;
         $classMethod = current(array_filter($classProps->getMethods(), function(\ReflectionMethod $classMethod) use ($method) {
             return $method === $classMethod->getName();
@@ -37,6 +42,7 @@ class Route {
         $this->requestMethod = $requestMethod;
         $this->class = $class;
         $this->method = $method;
+        $this->apiType = $apiType;
         $this->routeParts = explode('/', $this->url);
     }
 

@@ -15,5 +15,7 @@ if (!$actionHandler->getRoute() instanceof Route) {
     throw new \Exception("Url not found");
 }
 
+// Events
+
 $routeHandler = new RouteHandler($actionHandler);
 $routeHandler->call();

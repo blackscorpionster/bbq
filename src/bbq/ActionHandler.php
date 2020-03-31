@@ -18,6 +18,7 @@ class ActionHandler {
 	];
 
 	public const CLASS_NAME_AS_PARAMETER = "actionHandler";
+	public const CLASS_PATH_AS_PARAMETER = "src\bbq\ActionHandler";
 
 	private string $app = App::APP_NAME;
 	private string $method = "POST";
@@ -30,6 +31,7 @@ class ActionHandler {
 	private array $jsonData = [];
 	private array $files = []; 
 	private ?Route $route = null;
+	private array $events = [];
 
 	public function __construct(Routes $routes) {
 		$this->routes = $routes->getRoutes();
@@ -149,6 +151,8 @@ class ActionHandler {
 				continue;
 			}
 
+			// Matches the configured urls parts replacing the argument placeholder with the
+			// values passed on the request query
 			$match = $this->matchUrlParts($parts, $urlParts);
 
 			// print_r($match);exit();
@@ -159,6 +163,7 @@ class ActionHandler {
 
 			$route->setRouteParts($match);
 			$this->route = $route;
+			return;
 		}
 	}
 
