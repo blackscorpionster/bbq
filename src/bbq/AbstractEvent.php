@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace src\bbq;
 
-use src\bbq\ActionHandler;
-
 abstract class AbstractEvent {
     private array $parameters = [];
 
-    abstract function on(string $eventName);
+    abstract function on(string $eventName): self;
 
-    abstract function call(string $method, string $classPath);
+    abstract function call(string $method, string $classPath): self;
 
     public function addStringParameter(string $key, ?string $value): self
     {

@@ -8,6 +8,8 @@ use src\bbq\ActionHandler;
 use src\bbq\Route;
 use src\bbq\RouteHandler;
 use src\config\Routes;
+use src\bbq\SystemEventHandler;
+use src\config\Events;
 
 $actionHandler = new ActionHandler(new Routes());
 
@@ -15,7 +17,8 @@ if (!$actionHandler->getRoute() instanceof Route) {
     throw new \Exception("Url not found");
 }
 
-// Events
+// pre controller events
+$evenHandler = new SystemEventHandler(new Events());
 
 $routeHandler = new RouteHandler($actionHandler);
 $routeHandler->call();

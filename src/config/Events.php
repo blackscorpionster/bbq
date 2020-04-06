@@ -1,10 +1,15 @@
 <?php
-declare(srtcit_types=1);
-namespace src\bbq;
+
+declare(strict_types=1);
+
+namespace src\config;
 
 use src\bbq\SystemEvent;
+use src\bbq\CustomEvent;
+use src\bbq\EventsInterface;
+use src\bbq\AbstractEvent;
 
-class Events {
+class Events implements EventsInterface {
     private array $events = [];
     public function __construct() {
         $restAuthCheck = new SystemEvent();
@@ -13,9 +18,20 @@ class Events {
             ->on(SystemEvent::REST_ACTION_SYSTEM_EVENT)
             ->call('checkCredentials', 'src\event\RestAuthHandler')
         );
+
+        $myEvent = new CustomEvent();
+        $this->addEvent(
+            $myEvent
+            ->on("NEW_USER")
+            ->call('sendEmail', 'src\event\SendEmail')
+        );
     }
 
-    private function addEvent(AbstractEvent $event) {
+    public function addEvent(AbstractEvent $event) {
         $this->events[] = $event;
+    }
+
+    public function getEvents() {
+        return $this->events;
     }
 }

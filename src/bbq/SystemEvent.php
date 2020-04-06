@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace src\bbq;
 
-class SystemEvent extends AbstractEvent {
-    private string $systemEvent;
-    private string $classPath;
-    private string $method;
+use src\bbq\AbstractEvent;
 
+class SystemEvent extends AbstractEvent {
     public const REST_ACTION_SYSTEM_EVENT = 'restAction';
     public const WEB_ACTION_SYSTEM_EVENT = 'webAction';
     public const POST_REQUEST_SYSTEM_EVENT = 'postRequest';
@@ -19,23 +19,30 @@ class SystemEvent extends AbstractEvent {
         self::GET_REQUEST_SYSTEM_EVENT,
     ];
 
-    public function on(string $systemEvent) {
-        if (false === \in_array($systemEvent, AbstractEvent::SYSTEM_EVENTS)) {
-            throw new Exception("Invalid system event");
+    private string $systemEvent;
+    private string $classPath;
+    private string $method;
+
+    public function on(string $systemEvent): self {
+        if (false === \in_array($systemEvent, self::SYSTEM_EVENTS)) {
+            throw new \Exception("Invalid system event");
         }
         $this->systemEvent = $systemEvent;
+        return $this;
     }
 
-    public function call(string $method, string $classPath) {
+    public function call(string $method, string $classPath): self {
         if (empty($this->systemEvent)) {
-            throw new Exception("System event not found");
+            throw new \Exception("System event not found");
         }
 
-        if (!class_exists($classPath, false)) {
-            throw new Exception("Class not found");
+        if (!class_exists($classPath, true)) {
+            throw new \Exception("Class " . $classPath . " not found");
         }
 
         $this->classPath = $classPath;
         $this->method = $method;
+
+        return $this;
     }
 }

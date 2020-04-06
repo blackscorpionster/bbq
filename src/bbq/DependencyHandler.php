@@ -57,16 +57,12 @@ class DependencyHandler {
             }
         }
         $classParams = [];
-        print"<pre>";
         foreach($constructorParams as $idx => $paramDetails) {
             $classParam = $paramDetails["class"];
 
-            print_r($classParam);print"<br>";
             if ($this->actionHandler instanceof ActionHandler && $classParam === ActionHandler::CLASS_PATH_AS_PARAMETER) {
-                print"Use action handler<br>";
                 $classParams[] = $this->actionHandler;
             } else {
-                print"Resolved calss {$classParam}<br>";
                 $handledClass =  new DependencyHandler($classParam, $this->actionHandler);
                 $classParams[] = $handledClass->getClassInstance();
             }
