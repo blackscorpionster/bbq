@@ -15,8 +15,15 @@ class Events implements EventsInterface {
         $restAuthCheck = new SystemEvent();
         $this->addEvent(
             $restAuthCheck
-            ->on(SystemEvent::REST_ACTION_SYSTEM_EVENT)
+            ->on(SystemEvent::REST_ACTION)
             ->call('checkCredentials', 'src\event\RestAuthHandler')
+        );
+
+        $webAuthCheck = new SystemEvent();
+        $this->addEvent(
+            $webAuthCheck
+            ->on(SystemEvent::WEB_ACTION)
+            ->call('checkCredentials', 'src\event\WebAuthHandler')
         );
 
         $myEvent = new CustomEvent();

@@ -18,7 +18,7 @@ if (!$actionHandler->getRoute() instanceof Route) {
 }
 
 // pre controller events
-$evenHandler = new SystemEventHandler(new Events());
+$evenHandler = new SystemEventHandler(new Events(), $actionHandler);
 
 $routeHandler = new RouteHandler($actionHandler);
 $routeHandler->call();

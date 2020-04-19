@@ -7,32 +7,28 @@ namespace src\bbq;
 use src\bbq\AbstractEvent;
 
 class SystemEvent extends AbstractEvent {
-    public const REST_ACTION_SYSTEM_EVENT = 'restAction';
-    public const WEB_ACTION_SYSTEM_EVENT = 'webAction';
-    public const POST_REQUEST_SYSTEM_EVENT = 'postRequest';
-    public const GET_REQUEST_SYSTEM_EVENT = 'getRequest';
+    public const REST_ACTION = Route::REST_API;
+    public const WEB_ACTION = Route::WEB_API;
+    public const POST_REQUEST = 'POST';
+    public const GET_REQUEST = 'GET';
 
     public const SYSTEM_EVENTS = [
-        self::REST_ACTION_SYSTEM_EVENT,
-        self::WEB_ACTION_SYSTEM_EVENT,
-        self::POST_REQUEST_SYSTEM_EVENT,
-        self::GET_REQUEST_SYSTEM_EVENT,
+        self::REST_ACTION,
+        self::WEB_ACTION,
+        self::POST_REQUEST,
+        self::GET_REQUEST,
     ];
-
-    private string $systemEvent;
-    private string $classPath;
-    private string $method;
 
     public function on(string $systemEvent): self {
         if (false === \in_array($systemEvent, self::SYSTEM_EVENTS)) {
             throw new \Exception("Invalid system event");
         }
-        $this->systemEvent = $systemEvent;
+        $this->eventName = $systemEvent;
         return $this;
     }
 
     public function call(string $method, string $classPath): self {
-        if (empty($this->systemEvent)) {
+        if (empty($this->eventName)) {
             throw new \Exception("System event not found");
         }
 

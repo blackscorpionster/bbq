@@ -4,7 +4,13 @@ declare(strict_types=1);
 namespace src\bbq;
 
 abstract class AbstractEvent {
-    private array $parameters = [];
+    protected array $parameters = [];
+
+    protected string $eventName;
+
+    protected string $classPath;
+
+    protected string $method;
 
     abstract function on(string $eventName): self;
 
@@ -33,5 +39,17 @@ abstract class AbstractEvent {
     public function addObjectParameter(string $key, ?Object $value): self
     {
         $this->parameters[$key] = $value;
+    }
+
+    public function getEventName(): string {
+        return $this->eventName;
+    }
+
+    public function getClassPath(): string {
+        return $this->classPath;
+    }
+
+    public function getMethod(): string {
+        return $this->method;
     }
 }

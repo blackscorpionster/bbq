@@ -7,17 +7,13 @@ namespace src\bbq;
 use src\bbq\AbstractEvent;
 
 class CustomEvent extends AbstractEvent {
-    private string $customEvent;
-    private string $classPath;
-    private string $method;
-
     public function on(string $customEvent): self {
-        $this->customEvent = $customEvent;
+        $this->eventName = $customEvent;
         return $this;
     }
 
     public function call(string $method, string $classPath): self {
-        if (empty($this->customEvent)) {
+        if (empty($this->eventName)) {
             throw new \Exception("Custom event not found");
         }
 

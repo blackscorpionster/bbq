@@ -36,6 +36,10 @@ class Route {
         if (!$classMethod->getName() === $method) {
             throw new \Exception('Unknown action ' . $method);
         }
+
+        if (!in_array($apiType, [self::WEB_API, self::REST_API])) {
+            throw new \Exception('Unknown api type ' . $apiType);
+        }
         
         $this->name = $name;
         $this->url = $url;
@@ -104,5 +108,13 @@ class Route {
         $this->routeParts = $routeParts;
 
         return $this;
+    }
+
+    /**
+     * Get the value of apiType
+     */ 
+    public function getApiType()
+    {
+        return $this->apiType;
     }
 }

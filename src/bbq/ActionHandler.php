@@ -213,4 +213,12 @@ class ActionHandler {
 	{
 		return $this->files;
 	}
+
+	/**
+	 * Get the value of method
+	 */ 
+	public function getMethod()
+	{
+		return $this->method;
+	}
 }

@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace src\event;
 
-use src\bbq\SystemEvent;
+use src\bbq\ActionHandler;
 
 class RestAuthHandler {
-    public function __construct(SystemEvent $event) {
+    private ActionHandler $actionHandler;
+    public function __construct(ActionHandler $request) {
         print"<pre> EVENT !! ";
-        print_r($event);
+        print_r($request);
+        $this->actionHandler = $request;
     }
 
     public function checkCredentials() {
-        die("HI");
+        die("HI MM");
     }
 }
