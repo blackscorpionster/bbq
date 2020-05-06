@@ -10,6 +10,12 @@ class DependencyHandler {
     private Object $classInstance;
     private ?ActionHandler $actionHandler;
 
+    /**
+     * DependencyHandler constructor.
+     * @param string $classPath
+     * @param \src\bbq\ActionHandler|null $actionHandler
+     * @throws \Exception
+     */
     public function __construct(string $classPath, ?ActionHandler $actionHandler = null) {
         $this->classPath = $classPath;
         $this->actionHandler = $actionHandler;
@@ -22,13 +28,13 @@ class DependencyHandler {
      */
     private function instantiateClass(): void {
         try {
-            $refelectionClass = new \ReflectionClass($this->classPath);
+            $reflectionClass = new \ReflectionClass($this->classPath);
         } catch (\Throwable $exception) {
             throw new \Exception("Could not read class. Error: " . $exception->getMessage());
         }
 
         // https://www.php.net/manual/en/reflectionclass.getconstructor.php
-        $constructor = $refelectionClass->getConstructor();
+        $constructor = $reflectionClass->getConstructor();
 
         // Class has no constructor, or empty it can be initialized immediately
         if (!$constructor instanceof \ReflectionMethod || empty($constructor->getParameters())) {
@@ -68,7 +74,7 @@ class DependencyHandler {
             }
         }
 
-        $this->classInstance = $refelectionClass->newInstanceArgs($classParams);
+        $this->classInstance = $reflectionClass->newInstanceArgs($classParams);
         return;        
     }
 

@@ -23,11 +23,11 @@ class DbHandler
 	
 	public function __construct() 
 	{
-		$dbconexion = ADONewConnection($this->driver);
-		$dbconexion->setFetchMode(ADODB_FETCH_ASSOC);
-		$dbconexion->Connect($this->host, $this->user, $this->password, $this->databaseName);
-		$dbconexion->EXECUTE("set names 'utf8'");
-		$this->db = $dbconexion;
+		$dbConexion = ADONewConnection($this->driver);
+		$dbConexion->setFetchMode(ADODB_FETCH_ASSOC);
+		$dbConexion->Connect($this->host, $this->user, $this->password, $this->databaseName);
+		$dbConexion->EXECUTE("set names 'utf8'");
+		$this->db = $dbConexion;
 	}
 
 	/**

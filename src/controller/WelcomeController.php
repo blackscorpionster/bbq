@@ -19,6 +19,10 @@ class WelcomeController {
         print_r("Hi");
     }
 
+    /**
+     * @param string $userName
+     * @throws \Exception
+     */
     public function welcomeUser(string $userName): void {
         print"<pre>";
         print_r($this->actionHandler->getFiles());

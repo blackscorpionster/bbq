@@ -15,7 +15,25 @@ class Route {
     private string $apiType;
     private array $routeParts;
 
-    public function __construct(string $name, string $url, string $requestMethod, string $class, string $method, string $apiType = self::WEB_API) {
+    /**
+     * Route constructor.
+     * @param string $name
+     * @param string $url
+     * @param string $requestMethod
+     * @param string $class
+     * @param string $method
+     * @param string $apiType
+     * @throws \Exception
+     */
+    public function __construct(
+        string $name,
+        string $url,
+        string $requestMethod,
+        string $class,
+        string $method,
+        string $apiType = self::WEB_API
+    )
+    {
         $classExists = \class_exists($class);
         if (false === $classExists) {
             throw new \Exception('Unknown class ' . $class);
@@ -99,10 +117,9 @@ class Route {
     }
 
     /**
-     * Set the value of routeParts
-     *
-     * @return  self
-     */ 
+     * @param array $routeParts
+     * @return $this
+     */
     public function setRouteParts(array $routeParts): self
     {
         $this->routeParts = $routeParts;

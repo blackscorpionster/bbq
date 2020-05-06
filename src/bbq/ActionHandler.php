@@ -33,6 +33,11 @@ class ActionHandler {
 	private ?Route $route = null;
 	private array $events = [];
 
+    /**
+     * ActionHandler constructor.
+     * @param Routes $routes
+     * @throws \Exception
+     */
 	public function __construct(Routes $routes) {
 		$this->routes = $routes->getRoutes();
 		$this->processUrl();

@@ -42,6 +42,9 @@ class RouteHandler {
         ));exit();
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     private function invokeV2() {
         //$time_start = $this->microtime_float();
         $params = $this->route->getRouteParts();

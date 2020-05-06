@@ -56,6 +56,11 @@ class SystemEventHandler {
         }
     }
 
+    /**
+     * @param \src\bbq\SystemEvent $systemEvent
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
     private function invokeEventMethod(SystemEvent $systemEvent) {
         // Resolves the class' constructor parameters and instantiates the class
         $classHandler = new DependencyHandler($systemEvent->getClassPath(), $this->actionHandler);
