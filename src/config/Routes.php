@@ -49,6 +49,13 @@ class Routes {
                 'POST',
                 'src\controller\AuthController',
                 'login'
+            ),
+            new Route(
+                'Save bar code',
+                '/barcode/save',
+                'POST',
+                'src\controller\BarcodeController',
+                'save'
             )
         ];
     }

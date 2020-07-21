@@ -15,6 +15,7 @@ class ActionHandler {
 		"PUT",
 		"PATCH",
 		"DELETE",
+		"OPTIONS"
 	];
 
 	public const CLASS_NAME_AS_PARAMETER = "actionHandler";
@@ -78,7 +79,7 @@ class ActionHandler {
 		}
 		$method = $_SERVER["REQUEST_METHOD"];
 		if (!\in_array($method, self::VALID_HTTP_METHODS)) {
-			throw new \Exception("Wrong request method");
+			throw new \Exception("Wrong request method " . $method);
 		}
 		$this->method = $method;
 		
@@ -222,8 +223,14 @@ class ActionHandler {
 	/**
 	 * Get the value of method
 	 */ 
-	public function getMethod()
+	public function getMethod(): string
 	{
 		return $this->method;
+	}
+
+	public function respondPreflight(): int {
+		header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+		header("Access-Control-Allow-Headers: AccountKey, x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2");
+		return 0;
 	}
 }
