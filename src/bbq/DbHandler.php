@@ -61,11 +61,9 @@ class DbHandler
     
 		$rs = $db->Execute($stmt, $params);
 		if (!$rs) {
-            echo("failed");
             $db->Close();
 			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg());
 		} else {
-            echo("succeeded");
 			$res = $rs->GetRows();
 			$db->Close();
 			return $res;

@@ -11,6 +11,18 @@ class Routes {
     public function __construct() {
         $this->routes = [
             new Route('welcome', 
+                '/', 
+                'GET', 
+                'src\controller\authController', 
+                'login'
+            ),
+            new Route('auth', 
+                '/auth', 
+                'POST', 
+                'src\controller\authController', 
+                'auth'
+            ),
+            new Route('welcome', 
                 '/welcome', 
                 'GET', 
                 'src\controller\WelcomeController', 

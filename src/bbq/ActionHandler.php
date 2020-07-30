@@ -58,6 +58,7 @@ class ActionHandler {
 
 	private function processUrl(): void
 	{
+		//die(">> URL >> " . $_SERVER['REQUEST_URI']);
 		if (empty($_SERVER['REQUEST_URI'])) {
 			throw new \Exception("Wrong url");
 		}
@@ -232,5 +233,9 @@ class ActionHandler {
 		header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 		header("Access-Control-Allow-Headers: AccountKey, x-requested-with, Content-Type, origin, authorization, accept, client-security-token, host, date, cookie, cookie2");
 		return 0;
+	}
+
+	public function getHeaders(): array {
+		return $this->headers;
 	}
 }
