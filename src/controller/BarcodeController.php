@@ -20,8 +20,11 @@ class BarcodeController
 
     public function save() {
         $data = $this->actionHandler->getJsonData();
-        //print_r($data);die();
-        $this->dbHandler->runNativeSql("INSERT INTO barcode(code) VALUES (:?)", $data['code']);
+
+        //$this->dbHandler->runRawSql("SELECT * FROM sysuser;");die("Boom");
+        //$user = $this->dbHandler->runNativeSql("SELECT * FROM sysuser where email = :?;", 'ebuneli@gmail.com');
+        //print_r($user);die("SELECT");
+        $this->dbHandler->runNativeSql("INSERT INTO barcodex(code) VALUES (:?);", 'hihiasdi');
         return json_encode(['code' => 200, 'message' => 'saved']);
     }
 }

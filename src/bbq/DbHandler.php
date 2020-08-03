@@ -5,9 +5,9 @@ namespace src\bbq;
 use src\config\App;
 
 //If using Adodb, use this constant to define the case used in the results keys
-if(!defined('ADODB_ASSOC_CASE')){
-	define('ADODB_ASSOC_CASE',1); // 1 UpperCase, 0 LowerCase, 2 As written on the SQL sentence
-}
+// if(!defined('ADODB_ASSOC_CASE')){
+// 	define('ADODB_ASSOC_CASE',1); // 1 UpperCase, 0 LowerCase, 2 As written on the SQL sentence
+// }
 
 //Db abstraction layer, does not support namespaces and autoload but works perfectly
 require_once('vendor/adodb/adodb-php/adodb.inc.php');
@@ -18,16 +18,21 @@ class DbHandler
 	protected string  $user = App::APP_DB_USER;
 	protected string  $password = App::APP_DB_PASSWORD;
 	protected string  $databaseName = App::APP_DB_NAME;
-	protected string  $driver = App::APP_DB_DRIVER;
+    protected string  $driver = App::APP_DB_DRIVER;
+    protected int  $port = App::APP_DB_PORT;
+
 	public Object $db;
 	
 	public function __construct() 
 	{
 		$dbConexion = ADONewConnection($this->driver);
 		$dbConexion->setFetchMode(ADODB_FETCH_ASSOC);
-		$dbConexion->Connect($this->host, $this->user, $this->password, $this->databaseName);
-		$dbConexion->EXECUTE("set names 'utf8'");
-		$this->db = $dbConexion;
+		$dbConexion->Connect($this->host, $this->user, $this->password, $this->databaseName, $this->port);
+        $dbConexion->EXECUTE("set names 'utf8'");
+        $this->db = $dbConexion;
+        //print"<pre>";print_r($dbConexion);die();
+        // $user = $this->runNativeSql("SELECT * FROM sysuser WHERE email = ':?'", 'ebuneli@gmail.com');
+        // print_r($user);die();
 	}
 
 	/**
@@ -62,7 +67,7 @@ class DbHandler
 		$rs = $db->Execute($stmt, $params);
 		if (!$rs) {
             $db->Close();
-			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg());
+			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg() . \json_encode($stmt));
 		} else {
 			$res = $rs->GetRows();
 			$db->Close();
@@ -83,6 +88,12 @@ class DbHandler
         );
 
         return implode(' ', $mappedQuery);
+    }
+
+    public function runRawSql(string $sql) {
+        $rs = $this->db->Execute($sql);
+        $info = $rs->GetRows();
+        print_r($info);die("Boom");
     }
 	
 }

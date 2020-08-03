@@ -10,7 +10,7 @@ class Routes {
 
     public function __construct() {
         $this->routes = [
-            new Route('welcome', 
+            new Route('login', 
                 '/', 
                 'GET', 
                 'src\controller\authController', 
@@ -21,6 +21,12 @@ class Routes {
                 'POST', 
                 'src\controller\authController', 
                 'auth'
+            ),
+            new Route('logout', 
+                '/logout', 
+                'POST', 
+                'src\controller\authController', 
+                'logout'
             ),
             new Route('welcome', 
                 '/welcome', 

@@ -10,5 +10,6 @@ class App {
 	public const APP_DB_PASSWORD = 'NewLife2014*';
 	public const APP_DB_NAME = 'gui';
 	public const APP_DB_DRIVER = 'postgres9';
+	public const APP_DB_PORT = 5432;
 	public const PASS_PEPPER = 'as_d9879as9&*76*&as^J=asdas?asiiobj+';
 }
