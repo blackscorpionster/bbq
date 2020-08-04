@@ -22,6 +22,12 @@ class Routes {
                 'src\controller\authController', 
                 'auth'
             ),
+            new Route('init', 
+                '/init', 
+                'GET', 
+                'src\controller\authController', 
+                'initApp'
+            ),
             new Route('logout', 
                 '/logout', 
                 'POST', 

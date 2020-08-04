@@ -72,9 +72,28 @@ class AuthController {
     }
 
     /**
+     * /init
+     */
+    public function initApp() {
+        if ($this->sessionHandler->exists('_SYS_USER') && $this->sessionHandler->exists('token')) {
+            return \json_encode(['token' => $this->sessionHandler->get('token')]);
+        }
+
+        http_response_code(404);
+        throw new \RunTimeException('Invalid session');
+    }
+
+    /**
      * /logout
      */
     public function logout() {
-        print_r($this->actionHandler);die("terminating");
+        $token = $this->actionHandler->getJsonData()['token'];
+        if (\hash_equals($token, $this->sessionHandler->get('token'))) {
+            $this->sessionHandler->destroy();
+            return \json_encode(true);
+        }
+
+        http_response_code(404);
+        throw new \RuntimeException("Error");
     }
 }

@@ -41,6 +41,9 @@ class AuthService {
         if (\password_verify($pwdPeppered, $user[0]['password'])) {
             $sysUser = new User($user[0]);
             $this->sessionHandler->set('_SYS_USER', $sysUser);
+            if (empty($_SESSION['token'])) {
+                $_SESSION['token'] = bin2hex(random_bytes(32));
+            }
             return $sysUser;
         }
 

@@ -54,4 +54,13 @@ class SessionHandler
     {
         return isset($_SESSION[$key]);
     }
+
+    /**
+     * @return void
+     */
+    public function destroy(): void {
+        if (session_status() == PHP_SESSION_ACTIVE) { 
+            session_destroy(); 
+        }
+    }
 }
