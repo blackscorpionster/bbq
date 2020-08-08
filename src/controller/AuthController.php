@@ -9,6 +9,7 @@ use src\bbq\SessionHandler;
 use src\service\AuthService;
 use src\exception\EntityNotFoundException;
 use src\entity\User;
+use src\model\UserModel;
 
 class AuthController {
     private TemplateHandler $templateHandler;
@@ -21,8 +22,7 @@ class AuthController {
         TemplateHandler $templateHandler, 
         AuthService $authService,
         SessionHandler $sessionHandler
-    ) 
-    {
+    ){
         $this->templateHandler = $templateHandler;
         $this->actionHandler = $actionHandler;
         $this->authService = $authService;
@@ -76,7 +76,17 @@ class AuthController {
      */
     public function initApp() {
         if ($this->sessionHandler->exists('_SYS_USER') && $this->sessionHandler->exists('token')) {
-            return \json_encode(['token' => $this->sessionHandler->get('token')]);
+            $user = $this->sessionHandler->get('_SYS_USER');
+            $userModel = new UserModel();
+            $userModel->setId($user->getId())
+            ->setFirstName($user->getFirstName())
+            ->setLastName($user->getLastName())
+            ->setEmail($user->getEmail());
+
+            return \json_encode([
+                'token' => $this->sessionHandler->get('token'),
+                'user' => $userModel
+            ]);
         }
 
         http_response_code(404);

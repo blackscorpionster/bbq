@@ -60,14 +60,19 @@ class DbHandler
 		$res = [];
         $db = $this->db;
 
-        $sql = $db->addQ(empty($params) ? $statement : $this->prepareSql($statement));
-
+        $sql = empty($params) ? $statement : $this->prepareSql($statement);
         $stmt = $db->Prepare($sql);
-    
-		$rs = $db->Execute($stmt, $params);
+
+        $cleanParams = array_map(function($value) {
+            return $this->db->addQ($value);
+        }, $params);
+        
+        $rs = $db->Execute($stmt, $cleanParams);
+
 		if (!$rs) {
             $db->Close();
-			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg() . \json_encode($stmt));
+            print_r($stmt);
+			throw new \Exception('Problems trying to execute query :: ' . $db->ErrorMsg());
 		} else {
 			$res = $rs->GetRows();
 			$db->Close();
