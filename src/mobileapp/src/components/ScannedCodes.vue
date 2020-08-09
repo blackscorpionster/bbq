@@ -1,94 +1,34 @@
 <template>
-    <b-navbar toggleable="lg" type="dark" variant="dark">
-
-        <b-navbar-brand>{{user.firstName}}</b-navbar-brand>
-        
-        <b-navbar-toggle target="nav-collapse" style="z-index: 90;"></b-navbar-toggle>
-
-        <b-collapse id="nav-collapse" is-nav>
-            <b-navbar-nav class="ml-auto">
-                <div>
-                    <b-icon 
-                    @click="selectMenuOption('scannedCodes')"
-                    icon="upc-scan" font-scale="2" 
-                    style="margin:15px;">
-                    </b-icon>
-                    <b-icon 
-                    icon="person-circle" 
-                    @click="selectMenuOption('account')"
-                    font-scale="2" 
-                    style="margin:15px;">
-                    </b-icon>
-                    <b-icon 
-                    icon="folder"
-                    @click="selectMenuOption('collections')"
-                    font-scale="2" 
-                    style="margin:15px;">
-                    </b-icon>
-                    <b-icon 
-                    icon="heart"
-                    @click="selectMenuOption('favourites')" 
-                    font-scale="2" 
-                    style="margin:15px;">
-                    </b-icon>
-                    <b-icon 
-                    icon="power"
-                    @click="selectMenuOption('shutDown')" 
-                    font-scale="2" 
-                    style="margin:15px;">
-                    </b-icon>
-                </div>
-            </b-navbar-nav>
-        </b-collapse>
-
-    </b-navbar>
+    <div>
+        these are scanned codes
+    </div>
 </template>
-
 <script>
 import Vue from 'vue';
 import axios from 'axios';
-import {store} from '../store';
 
-//import * as scanner from '../assets/js/barCodeReader.js';
 export default Vue.extend({
-    name: "TopMenu",
+    name: "ScannedCodes",
     data: function() {
         return {
-            changingHash: false,
-            currentPage: 'favourites'
+            changingHash: false
         }
     },
-    computed: {
-        token() {
-            return store.token
-        },
-        user() {
-            return store.user
-        }
-    },
-    mounted: function () {
+    mounted: function() {
         // This is triggered when the mobile tool changes the url on callback, adding the # symbol
         window.addEventListener("hashchange", this.onbarcode, false);
-
-        if(window.location.hash.substr(1,2) == "zx"){
-            alert('Location ZX');
-            //var bc = window.location.hash.substr(3);
-            localStorage["barcode"] = decodeURI(window.location.hash.substr(3))
-            window.close();
-            self.close();
-            window.location.href = "about:blank";//In case self.close isn't allowed
-        }
-    }, methods: {
-        selectMenuOption: function(option) {
-            console.log("Opening >>> ", option);
-            this.currentPage = option;
-            this.$emit('current-page', option);
+        console.log("Mounting scanned");
+        this.init();
+    },
+    methods: {
+        init: function() {
+            console.log("Init saved codes");
         },
         processBarcode: function(bc) {
             const data = JSON.stringify({'code': bc});
             console.log("Data", data);
             axios.post(
-                'http://10.1.1.52:8000/barcode/save', 
+                '/barcode/save', 
                 data,
                 {
                     headers: {
@@ -174,8 +114,9 @@ export default Vue.extend({
             })
         },
     }
-})
+});
 </script>
 
 <style scoped>
+
 </style>
